@@ -4,12 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - JNNTool License Portal</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f1f5f9; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; }
         .navbar { background: #0f172a; border-bottom: 1px solid #1e293b; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
-        .nav-brand { display: flex; align-items: center; gap: 12px; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 16px; }
-        .brand-badge { background: #0284c7; color: #fff; border-radius: 6px; padding: 3px 8px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 16px; }
+        .nav-brand-logo { width: 30px; height: 30px; object-fit: contain; }
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-link { color: #94a3b8; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color 0.2s; padding: 6px 10px; border-radius: 6px; }
         .nav-link:hover, .nav-link.active { color: #ffffff; background: #1e293b; }
@@ -68,7 +70,7 @@
 <body>
     <header class="navbar">
         <a href="/" class="nav-brand">
-            <span class="brand-badge">JNN</span>
+            <img src="~/logo.png" alt="JNN Logo" class="nav-brand-logo" />
             <span>JNNTool License Portal</span>
         </a>
         <nav class="nav-links">
