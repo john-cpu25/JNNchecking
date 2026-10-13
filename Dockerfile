@@ -15,7 +15,7 @@ RUN dotnet restore "LicenseManagement.Admin/LicenseManagement.Admin.csproj"
 # Copy remaining source code and publish
 COPY . .
 WORKDIR "/src/LicenseManagement.Admin"
-RUN dotnet publish "LicenseManagement.Admin.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "LicenseManagement.Admin.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:ErrorOnDuplicatePublishOutputFiles=false
 
 # ─── Runtime Image ──────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
