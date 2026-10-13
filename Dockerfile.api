@@ -1,0 +1,32 @@
+# ─── Dockerfile for JNNchecking Revit REST API ─────────────────
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Copy project files and restore
+COPY ["LicenseManagement.Domain/LicenseManagement.Domain.csproj", "LicenseManagement.Domain/"]
+COPY ["LicenseManagement.Application/LicenseManagement.Application.csproj", "LicenseManagement.Application/"]
+COPY ["LicenseManagement.Infrastructure/LicenseManagement.Infrastructure.csproj", "LicenseManagement.Infrastructure/"]
+COPY ["LicenseManagement.Api/LicenseManagement.Api.csproj", "LicenseManagement.Api/"]
+
+RUN dotnet restore "LicenseManagement.Api/LicenseManagement.Api.csproj"
+
+# Copy full source and publish
+COPY . .
+WORKDIR "/src/LicenseManagement.Api"
+RUN dotnet publish "LicenseManagement.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# ─── Runtime image ─────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+# Data volume for SQLite
+VOLUME ["/data"]
+ENV ConnectionStrings__DefaultConnection="Data Source=/data/licenses.db"
+
+COPY --from=build /app/publish .
+
+EXPOSE 5000
+ENTRYPOINT ["dotnet", "LicenseManagement.Api.dll"]

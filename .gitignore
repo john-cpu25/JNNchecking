@@ -1,0 +1,37 @@
+## ─── Build Results ─────────────────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+publish/
+dist/
+
+## ─── Visual Studio / VS Code / JetBrains ───────────────────
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## ─── Database & Secrets ───────────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+licenses.db
+licenses.db-shm
+licenses.db-wal
+appsettings.Production.json
+*.local.json
+
+## ─── OS Temporary Files ───────────────────────────────────
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.tmp
+*~

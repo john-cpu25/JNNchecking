@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="LicenseManagement.Admin/LicenseManagement.Admin.csproj" />
+  <Project Path="LicenseManagement.Api/LicenseManagement.Api.csproj" />
+  <Project Path="LicenseManagement.Application/LicenseManagement.Application.csproj" />
+  <Project Path="LicenseManagement.Domain/LicenseManagement.Domain.csproj" />
+  <Project Path="LicenseManagement.Infrastructure/LicenseManagement.Infrastructure.csproj" />
+</Solution>

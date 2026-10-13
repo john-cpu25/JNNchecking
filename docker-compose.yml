@@ -1,0 +1,44 @@
+services:
+  # 1. Web Admin Management Portal (Dashboard)
+  jnn-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    container_name: jnnchecking-admin
+    restart: unless-stopped
+    ports:
+      - "5031:5031"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5031
+      - ConnectionStrings__DefaultConnection=Data Source=/data/licenses.db
+      - Security__JwtSecret=JNNTool_SuperSecret_Jwt_SigningKey_AtLeast32BytesLong_2026!
+      - Security__CodePepper=JNNTool_Pepper_ActivationCode_Secret_Salt_2026!
+    volumes:
+      - jnnchecking-data:/data
+
+  # 2. REST API for Revit Client (Tools/Login)
+  jnn-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: jnnchecking-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Data Source=/data/licenses.db
+      - Security__JwtSecret=JNNTool_SuperSecret_Jwt_SigningKey_AtLeast32BytesLong_2026!
+      - Security__JwtIssuer=LicenseManagementApi
+      - Security__JwtAudience=JNNToolRevitClient
+      - Security__CodePepper=JNNTool_Pepper_ActivationCode_Secret_Salt_2026!
+    volumes:
+      - jnnchecking-data:/data
+    depends_on:
+      - jnn-admin
+
+volumes:
+  jnnchecking-data:
+    driver: local

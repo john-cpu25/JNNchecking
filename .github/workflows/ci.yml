@@ -1,0 +1,25 @@
+name: Build & Verify JNNchecking
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET SDK 10.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore JNNchecking.sln
+
+    - name: Build Solution (Release)
+      run: dotnet build JNNchecking.sln --configuration Release --no-restore

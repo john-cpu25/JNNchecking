@@ -1,0 +1,60 @@
+@page
+@model LicenseManagement.Admin.Pages.EventsModel
+@{
+    ViewData["Title"] = "Nhật Ký Hệ Thống (Audit Logs)";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Nhật Ký Hoạt Động Cấp Phép &amp; Kiểm Tra (Audit Trail)</h1>
+        <p class="page-subtitle">Ghi nhận toàn bộ thao tác kích hoạt, xác thực, gia hạn, thu hồi và giải phóng thiết bị</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Thời Gian (UTC)</th>
+                    <th>Sự Kiện</th>
+                    <th>Tài Khoản Liên Quan</th>
+                    <th>Chi Tiết</th>
+                    <th>Địa Chỉ IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Events.Any())
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">
+                            Chưa có sự kiện nào được ghi nhận.
+                        </td>
+                    </tr>
+                }
+                @foreach (var ev in Model.Events)
+                {
+                    <tr>
+                        <td style="white-space:nowrap;">
+                            <strong>@ev.CreatedAtUtc.ToString("yyyy-MM-dd HH:mm:ss")</strong>
+                        </td>
+                        <td>
+                            <span class="badge @(ev.EventType == LicenseManagement.Domain.Enums.LicenseEventType.Activated || ev.EventType == LicenseManagement.Domain.Enums.LicenseEventType.TrialStarted ? "badge-active" : ev.EventType == LicenseManagement.Domain.Enums.LicenseEventType.Revoked || ev.EventType == LicenseManagement.Domain.Enums.LicenseEventType.UserBlocked ? "badge-expired" : "badge-pending")">
+                                @ev.EventType
+                            </span>
+                        </td>
+                        <td>
+                            @(ev.Email ?? "-")
+                        </td>
+                        <td style="max-width:380px; word-break:break-word;">
+                            @ev.EventDetails
+                        </td>
+                        <td style="font-family:monospace; font-size:12px; color:#64748b;">
+                            @(ev.IpAddress ?? "-")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

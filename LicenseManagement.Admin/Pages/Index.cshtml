@@ -1,0 +1,253 @@
+@page
+@model LicenseManagement.Admin.Pages.IndexModel
+@{
+    ViewData["Title"] = "Quản Lý Bản Quyền";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Cổng Quản Trị Bản Quyền JNNTool</h1>
+        <div class="page-subtitle">Hệ thống cấp phát bản quyền, phê duyệt đăng ký từ Revit và quản lý thiết bị</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+        <a asp-page-handler="ExportCsv" class="btn btn-secondary">Xuất Báo Cáo CSV</a>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.GeneratedActivationCode))
+{
+    <div class="alert-code">
+        <h3 style="color:#0284c7; font-size:15px; margin-bottom:4px;">MÃ KÍCH HOẠT VỪA ĐƯỢC TẠO THÀNH CÔNG</h3>
+        <p style="font-size:13px; color:#0369a1;">Gửi mã này cho khách hàng <strong>@Model.GeneratedEmail</strong> để nhập vào ô <em>Key Code</em> trên Revit. Lưu ý: Vì lý do bảo mật, mã chỉ hiển thị 1 LẦN DUY NHẤT và chỉ được lưu dưới dạng băm trong CSDL:</p>
+        <div class="code-display" id="actCode">@Model.GeneratedActivationCode</div>
+        <div style="margin-top:10px;">
+            <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('actCode').innerText); alert('Đã sao chép mã kích hoạt!');">Sao Chép Mã GUID</button>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:12px 16px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+        @Model.SuccessMessage
+    </div>
+}
+
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Tổng Số Bản Quyền</div>
+        <div class="stat-value">@Model.TotalLicenses</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Đang Hoạt Động (Active)</div>
+        <div class="stat-value" style="color:#16a34a;">@Model.ActiveLicenses</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Chờ Duyệt Từ Revit</div>
+        <div class="stat-value" style="color:#d97706;">@Model.PendingRequestsCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Thiết Bị Đang Kích Hoạt</div>
+        <div class="stat-value" style="color:#0284c7;">@Model.ActiveDevicesCount</div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  CARD: YÊU CẦU ĐĂNG KÝ TỪ REVIT CHỜ PHÊ DUYỆT                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="card" style="border: 1px solid @(Model.PendingRequests.Any() ? "#f59e0b" : "#e2e8f0"); box-shadow: @(Model.PendingRequests.Any() ? "0 4px 12px rgba(245, 158, 11, 0.15)" : "none");">
+    <div class="card-header" style="background:@(Model.PendingRequests.Any() ? "#fffbeb" : "transparent"); margin:-20px -20px 16px -20px; padding:16px 20px; border-radius:9px 9px 0 0; border-bottom:1px solid @(Model.PendingRequests.Any() ? "#fef3c7" : "#e2e8f0");">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <h2 class="card-title" style="color:@(Model.PendingRequests.Any() ? "#b45309" : "#0f172a"); font-size:16px; margin:0;">
+                🔔 Yêu Cầu Đăng Ký Chờ Phê Duyệt (Revit Client)
+            </h2>
+            <span class="badge" style="background:@(Model.PendingRequests.Any() ? "#f59e0b" : "#94a3b8"); color:#ffffff; font-size:11px;">
+                @(Model.PendingRequestsCount) yêu cầu
+            </span>
+        </div>
+        <small style="color:#64748b;">Người dùng bấm nút "Gửi yêu cầu đăng ký" từ Revit Add-in sẽ hiện ở đây</small>
+    </div>
+
+    @if (!Model.PendingRequests.Any())
+    {
+        <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">
+            Hiện tại không có yêu cầu đăng ký nào đang chờ duyệt.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email &amp; Họ Tên</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Machine ID (Thiết Bị)</th>
+                        <th>Thời Gian Gửi</th>
+                        <th>Thao Tác Phê Duyệt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var req in Model.PendingRequests)
+                    {
+                        <tr>
+                            <td>
+                                <strong style="color:#0f172a;">@req.Email</strong>
+                                <div style="font-size:12px; color:#2563eb; margin-top:2px;">
+                                    👤 @(string.IsNullOrWhiteSpace(req.FullName) ? "Chưa cung cấp tên" : req.FullName)
+                                </div>
+                            </td>
+                            <td>
+                                @(string.IsNullOrWhiteSpace(req.PhoneNumber) ? "—" : req.PhoneNumber)
+                            </td>
+                            <td>
+                                <code style="font-size:11px; color:#334155; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-family:monospace;">
+                                    @req.MachineId
+                                </code>
+                                @if (!string.IsNullOrWhiteSpace(req.DeviceName))
+                                {
+                                    <div style="font-size:11px; color:#64748b; margin-top:2px;">💻 @req.DeviceName</div>
+                                }
+                            </td>
+                            <td>
+                                <div>@req.CreatedAtUtc.ToString("yyyy-MM-dd HH:mm") UTC</div>
+                            </td>
+                            <td>
+                                <div style="display:flex; gap:6px; align-items:center;">
+                                    <!-- Phê duyệt và cấp key -->
+                                    <form method="post" asp-page-handler="ApproveRequest" style="display:flex; gap:6px;">
+                                        <input type="hidden" name="requestId" value="@req.Id" />
+                                        <select name="licenseType" class="form-control" style="padding:4px 8px; font-size:11.5px; height:30px;">
+                                            <option value="2">Annual (1 Năm)</option>
+                                            <option value="1">Trial (30 Ngày)</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary" style="background:#16a34a; border-color:#16a34a; color:#fff;" onclick="return confirm('Phê duyệt yêu cầu và sinh mã kích hoạt cho @req.Email?');">
+                                            ✓ Phê Duyệt &amp; Cấp Key
+                                        </button>
+                                    </form>
+
+                                    <!-- Từ chối -->
+                                    <form method="post" asp-page-handler="RejectRequest">
+                                        <input type="hidden" name="requestId" value="@req.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Từ chối yêu cầu đăng ký này?');">
+                                            ✕ Từ Chối
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- Create License Card -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Cấp Bản Quyền Mới Thủ Công (Chủ Động Tạo)</h2>
+    </div>
+    <form method="post" asp-page-handler="CreateLicense" class="form-inline" style="flex-wrap:wrap;">
+        <input type="email" asp-for="NewEmail" class="form-control" placeholder="Email người dùng (vd: engineer@company.com)" style="min-width:280px;" required />
+        <select asp-for="NewLicenseType" class="form-control" style="min-width:160px;">
+            <option value="2">Annual (1 Năm)</option>
+            <option value="1">Trial (30 Ngày)</option>
+        </select>
+        <input type="number" asp-for="NewMaxDevices" class="form-control" style="width:100px;" value="1" min="1" max="5" title="Số thiết bị tối đa" />
+        <button type="submit" class="btn btn-primary">Tạo Bản Quyền &amp; Mã GUID</button>
+    </form>
+</div>
+
+<!-- License Table Card -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Danh Sách Bản Quyền Trong Hệ Thống</h2>
+        <form method="get" class="form-inline">
+            <input type="text" name="Search" value="@Model.Search" placeholder="Tìm theo email..." class="form-control" style="width:220px;" />
+            <button type="submit" class="btn btn-secondary">Tìm</button>
+            @if (!string.IsNullOrEmpty(Model.Search))
+            {
+                <a href="/" class="btn btn-secondary btn-sm">Xóa Lọc</a>
+            }
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Email &amp; ID</th>
+                    <th>Loại</th>
+                    <th>Trạng Thái</th>
+                    <th>Thời Hạn (UTC)</th>
+                    <th>Thiết Bị Đang Dùng</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Licenses.Any())
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">
+                            Không tìm thấy bản quyền nào phù hợp.
+                        </td>
+                    </tr>
+                }
+                @foreach (var lic in Model.Licenses)
+                {
+                    <tr>
+                        <td>
+                            <strong>@lic.Email</strong>
+                            <div style="font-size:11px; color:#94a3b8; font-family:monospace;">ID: @lic.Id</div>
+                        </td>
+                        <td>
+                            <span class="badge @(lic.LicenseType == LicenseManagement.Domain.Enums.LicenseType.Trial ? "badge-trial" : "badge-annual")">
+                                @lic.LicenseType
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(lic.Status == LicenseManagement.Domain.Enums.LicenseStatus.Active ? "badge-active" : lic.Status == LicenseManagement.Domain.Enums.LicenseStatus.Pending ? "badge-pending" : "badge-expired")">
+                                @lic.Status
+                            </span>
+                        </td>
+                        <td>
+                            <div>@lic.ExpiresAtUtc.ToString("yyyy-MM-dd HH:mm") UTC</div>
+                            <small style="color:#64748b;">Bắt đầu: @lic.StartsAtUtc.ToString("yyyy-MM-dd")</small>
+                        </td>
+                        <td>
+                            <div>@lic.ActiveDeviceCount / @lic.MaxDevices thiết bị</div>
+                            @foreach (var dev in lic.Devices.Where(d => d.Status == LicenseManagement.Domain.Enums.DeviceStatus.Active))
+                            {
+                                <div style="font-size:11.5px; color:#334155; margin-top:2px;">
+                                    💻 @dev.DeviceName
+                                    <form method="post" asp-page-handler="ResetDevice" style="display:inline;">
+                                        <input type="hidden" name="licenseId" value="@lic.Id" />
+                                        <input type="hidden" name="deviceId" value="@dev.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" style="padding:1px 6px; font-size:10.5px;" onclick="return confirm('Giải phóng thiết bị này?');">Reset</button>
+                                    </form>
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:6px;">
+                                <form method="post" asp-page-handler="Renew">
+                                    <input type="hidden" name="id" value="@lic.Id" />
+                                    <button type="submit" class="btn btn-sm btn-secondary" onclick="return confirm('Gia hạn bản quyền thêm 1 năm?');">Gia Hạn 1 Năm</button>
+                                </form>
+                                @if (lic.Status != LicenseManagement.Domain.Enums.LicenseStatus.Revoked)
+                                {
+                                    <form method="post" asp-page-handler="Revoke">
+                                        <input type="hidden" name="id" value="@lic.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn THU HỒI bản quyền này không? Thiết bị liên kết sẽ bị vô hiệu hóa.');">Thu Hồi</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

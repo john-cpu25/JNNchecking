@@ -1,0 +1,32 @@
+# ─── Dockerfile for JNNchecking Admin Web Portal ───────────────
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Copy project files and restore
+COPY ["LicenseManagement.Domain/LicenseManagement.Domain.csproj", "LicenseManagement.Domain/"]
+COPY ["LicenseManagement.Application/LicenseManagement.Application.csproj", "LicenseManagement.Application/"]
+COPY ["LicenseManagement.Infrastructure/LicenseManagement.Infrastructure.csproj", "LicenseManagement.Infrastructure/"]
+COPY ["LicenseManagement.Admin/LicenseManagement.Admin.csproj", "LicenseManagement.Admin/"]
+
+RUN dotnet restore "LicenseManagement.Admin/LicenseManagement.Admin.csproj"
+
+# Copy full source and publish
+COPY . .
+WORKDIR "/src/LicenseManagement.Admin"
+RUN dotnet publish "LicenseManagement.Admin.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# ─── Runtime image ─────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:5031
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+# Data volume for SQLite
+VOLUME ["/data"]
+ENV ConnectionStrings__DefaultConnection="Data Source=/data/licenses.db"
+
+COPY --from=build /app/publish .
+
+EXPOSE 5031
+ENTRYPOINT ["dotnet", "LicenseManagement.Admin.dll"]

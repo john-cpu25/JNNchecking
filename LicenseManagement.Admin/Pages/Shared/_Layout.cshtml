@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - JNNTool License Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f1f5f9; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { background: #0f172a; border-bottom: 1px solid #1e293b; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 16px; }
+        .brand-badge { background: #0284c7; color: #fff; border-radius: 6px; padding: 3px 8px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-link { color: #94a3b8; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color 0.2s; padding: 6px 10px; border-radius: 6px; }
+        .nav-link:hover, .nav-link.active { color: #ffffff; background: #1e293b; }
+        .nav-user { display: flex; align-items: center; gap: 12px; }
+        .user-pill { background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #cbd5e1; }
+        .btn-logout { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; }
+        .btn-logout:hover { background: #ef4444; color: #ffffff; }
+
+        .container { max-width: 1200px; width: 100%; margin: 24px auto; padding: 0 20px; flex: 1; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #0f172a; }
+        .page-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .stat-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 28px; font-weight: 700; color: #0f172a; margin-top: 6px; }
+
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .card-title { font-size: 16px; font-weight: 700; color: #0f172a; }
+
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        th { background: #f8fafc; padding: 12px 14px; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; color: #1e293b; vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .badge-active { background: #dcfce7; color: #15803d; }
+        .badge-pending { background: #fef9c3; color: #854d0e; }
+        .badge-expired { background: #fee2e2; color: #b91c1c; }
+        .badge-revoked { background: #f1f5f9; color: #64748b; }
+        .badge-trial { background: #e0f2fe; color: #0369a1; }
+        .badge-annual { background: #f3e8ff; color: #7e22ce; }
+
+        .btn { padding: 8px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; transition: all 0.2s; }
+        .btn-primary { background: #0284c7; color: #fff; }
+        .btn-primary:hover { background: #0369a1; }
+        .btn-secondary { background: #f8fafc; border-color: #cbd5e1; color: #334155; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-danger { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+        .btn-danger:hover { background: #fecaca; }
+        .btn-sm { padding: 4px 8px; font-size: 11.5px; }
+
+        .form-inline { display: flex; gap: 10px; align-items: center; }
+        .form-control { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; }
+        .form-control:focus { border-color: #0284c7; }
+
+        .alert-code { background: #eff6ff; border: 2px dashed #0284c7; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .code-display { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 18px; font-weight: bold; color: #0369a1; background: #ffffff; padding: 10px 14px; border-radius: 6px; border: 1px solid #bfdbfe; margin-top: 8px; display: inline-block; word-break: break-all; }
+
+        footer { text-align: center; padding: 18px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; background: #ffffff; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="brand-badge">JNN</span>
+            <span>JNNTool License Portal</span>
+        </a>
+        <nav class="nav-links">
+            <a href="/" class="nav-link">Bản Quyền (Licenses)</a>
+            <a href="/Events" class="nav-link">Nhật Ký (Audit Trail)</a>
+        </nav>
+        <div class="nav-user">
+            <span class="user-pill">Quản Trị: @User.Identity?.Name</span>
+            <a href="/Logout" class="btn-logout">Đăng Xuất</a>
+        </div>
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer>
+        JNNTool Revit Add-in License System &copy; 2026. All Rights Reserved.
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
