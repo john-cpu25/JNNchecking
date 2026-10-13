@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Linq;
 using System.Threading;
@@ -345,7 +345,7 @@ namespace LicenseManagement.Infrastructure.Services
                     return new ActivateResponse { Success = false, Message = "This device has already used a trial license." };
                 }
 
-                // Create Trial License: 15 days
+                // Create Trial License: 30 days
                 var startsAtUtc = utcNow;
                 var expiresAtUtc = CalendarDurationCalculator.CalculateTrialExpiration(startsAtUtc);
 
@@ -375,7 +375,7 @@ namespace LicenseManagement.Infrastructure.Services
                 _db.Devices.Add(device);
 
                 await RecordEventAsync(user.Id, license.Id, device.Id, LicenseEventType.TrialStarted,
-                    $"15-day trial started for '{user.Email}'.", ipAddress, ct);
+                    $"30-day trial started for '{user.Email}'.", ipAddress, ct);
 
                 await _db.SaveChangesAsync(ct);
                 await tx.CommitAsync(ct);
@@ -391,7 +391,7 @@ namespace LicenseManagement.Infrastructure.Services
                     LicenseStatus = license.Status,
                     StartsAtUtc = license.StartsAtUtc,
                     ExpiresAtUtc = license.ExpiresAtUtc,
-                    Message = "Trial activated successfully for 15 days."
+                    Message = "Trial activated successfully for 30 days."
                 };
             }
             catch (Exception ex)
@@ -411,7 +411,7 @@ namespace LicenseManagement.Infrastructure.Services
         {
             if (string.IsNullOrWhiteSpace(request.Email))
             {
-                return new RegisterAccountResponse { Success = false, Message = "Email là bắt buộc." };
+                return new RegisterAccountResponse { Success = false, Message = "Email lÃ  báº¯t buá»™c." };
             }
 
             string normalizedEmail = request.Email.Trim().ToLowerInvariant();
@@ -452,7 +452,7 @@ namespace LicenseManagement.Infrastructure.Services
                         Success = true,
                         AlreadyApproved = true,
                         ActivationCode = existingReq.ApprovedActivationCode,
-                        Message = "Tài khoản của bạn đã được Quản trị viên duyệt!"
+                        Message = "TÃ i khoáº£n cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c Quáº£n trá»‹ viÃªn duyá»‡t!"
                     };
                 }
 
@@ -486,7 +486,7 @@ namespace LicenseManagement.Infrastructure.Services
             {
                 Success = true,
                 AlreadyApproved = false,
-                Message = "Đã gửi thông tin đăng ký lên hệ thống máy chủ thành công! Quản trị viên đang xem xét phê duyệt."
+                Message = "ÄÃ£ gá»­i thÃ´ng tin Ä‘Äƒng kÃ½ lÃªn há»‡ thá»‘ng mÃ¡y chá»§ thÃ nh cÃ´ng! Quáº£n trá»‹ viÃªn Ä‘ang xem xÃ©t phÃª duyá»‡t."
             };
         }
 
@@ -500,7 +500,7 @@ namespace LicenseManagement.Infrastructure.Services
 
             if (req == null)
             {
-                return new RegisterAccountResponse { Success = false, Message = "Chưa có yêu cầu đăng ký nào." };
+                return new RegisterAccountResponse { Success = false, Message = "ChÆ°a cÃ³ yÃªu cáº§u Ä‘Äƒng kÃ½ nÃ o." };
             }
 
             if (req.Status == "Approved" && !string.IsNullOrEmpty(req.ApprovedActivationCode))
@@ -510,7 +510,7 @@ namespace LicenseManagement.Infrastructure.Services
                     Success = true,
                     AlreadyApproved = true,
                     ActivationCode = req.ApprovedActivationCode,
-                    Message = "Tài khoản đã được phê duyệt!"
+                    Message = "TÃ i khoáº£n Ä‘Ã£ Ä‘Æ°á»£c phÃª duyá»‡t!"
                 };
             }
 
@@ -518,7 +518,7 @@ namespace LicenseManagement.Infrastructure.Services
             {
                 Success = true,
                 AlreadyApproved = false,
-                Message = req.Status == "Rejected" ? "Yêu cầu đã bị từ chối." : "Yêu cầu đang chờ duyệt."
+                Message = req.Status == "Rejected" ? "YÃªu cáº§u Ä‘Ã£ bá»‹ tá»« chá»‘i." : "YÃªu cáº§u Ä‘ang chá» duyá»‡t."
             };
         }
 

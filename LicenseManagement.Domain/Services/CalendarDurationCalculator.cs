@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using LicenseManagement.Domain.Enums;
 
 namespace LicenseManagement.Domain.Services
@@ -9,11 +9,11 @@ namespace LicenseManagement.Domain.Services
     /// </summary>
     public static class CalendarDurationCalculator
     {
-        public const int TrialDurationDays = 15;
+        public const int TrialDurationDays = 30;
         public const int AnnualDurationYears = 1;
 
         /// <summary>
-        /// Calculates trial expiration: exactly 15 calendar days from start in UTC.
+        /// Calculates trial expiration: exactly 30 calendar days from start in UTC.
         /// </summary>
         public static DateTime CalculateTrialExpiration(DateTime startsAtUtc)
         {
