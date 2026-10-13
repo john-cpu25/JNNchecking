@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <ProjectReference Include="..\LicenseManagement.Api\LicenseManagement.Api.csproj" />
     <ProjectReference Include="..\LicenseManagement.Application\LicenseManagement.Application.csproj" />
     <ProjectReference Include="..\LicenseManagement.Infrastructure\LicenseManagement.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
   </ItemGroup>
 
   <PropertyGroup>

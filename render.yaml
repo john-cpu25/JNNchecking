@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: jnnchecking
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: free
+    region: singapore
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Security__JwtSecret
+        value: JNNTool_SuperSecret_Jwt_SigningKey_AtLeast32BytesLong_2026!
+      - key: Security__CodePepper
+        value: JNNTool_Pepper_ActivationCode_Secret_Salt_2026!
+      - key: Security__JwtIssuer
+        value: LicenseManagementApi
+      - key: Security__JwtAudience
+        value: JNNToolRevitClient
+    disk:
+      name: jnnchecking-data
+      mountPath: /data
+      sizeGB: 1
