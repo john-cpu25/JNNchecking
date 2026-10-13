@@ -1,27 +1,27 @@
-﻿@page
+@page
 @model LicenseManagement.Admin.Pages.IndexModel
 @{
-    ViewData["Title"] = "Quáº£n LÃ½ Báº£n Quyá»n";
+    ViewData["Title"] = "Quản Lý Bản Quyền";
 }
 
 <div class="page-header">
     <div>
-        <h1 class="page-title">Cá»•ng Quáº£n Trá»‹ Báº£n Quyá»n JNNTool</h1>
-        <div class="page-subtitle">Há»‡ thá»‘ng cáº¥p phÃ¡t báº£n quyá»n, phÃª duyá»‡t Ä‘Äƒng kÃ½ tá»« Revit vÃ  quáº£n lÃ½ thiáº¿t bá»‹</div>
+        <h1 class="page-title">Cổng Quản Trị Bản Quyền JNNTool</h1>
+        <div class="page-subtitle">Hệ thống cấp phát bản quyền, phê duyệt đăng ký từ Revit và quản lý thiết bị</div>
     </div>
     <div style="display:flex; gap:10px;">
-        <a asp-page-handler="ExportCsv" class="btn btn-secondary">Xuáº¥t BÃ¡o CÃ¡o CSV</a>
+        <a asp-page-handler="ExportCsv" class="btn btn-secondary">Xuất Báo Cáo CSV</a>
     </div>
 </div>
 
 @if (!string.IsNullOrEmpty(Model.GeneratedActivationCode))
 {
     <div class="alert-code">
-        <h3 style="color:#0284c7; font-size:15px; margin-bottom:4px;">MÃƒ KÃCH HOáº T Vá»ªA ÄÆ¯á»¢C Táº O THÃ€NH CÃ”NG</h3>
-        <p style="font-size:13px; color:#0369a1;">Gá»­i mÃ£ nÃ y cho khÃ¡ch hÃ ng <strong>@Model.GeneratedEmail</strong> Ä‘á»ƒ nháº­p vÃ o Ã´ <em>Key Code</em> trÃªn Revit. LÆ°u Ã½: VÃ¬ lÃ½ do báº£o máº­t, mÃ£ chá»‰ hiá»ƒn thá»‹ 1 Láº¦N DUY NHáº¤T vÃ  chá»‰ Ä‘Æ°á»£c lÆ°u dÆ°á»›i dáº¡ng bÄƒm trong CSDL:</p>
+        <h3 style="color:#0284c7; font-size:15px; margin-bottom:4px;">MÃ KÍCH HOẠT VỪA ĐƯỢC TẠO THÀNH CÔNG</h3>
+        <p style="font-size:13px; color:#0369a1;">Gửi mã này cho khách hàng <strong>@Model.GeneratedEmail</strong> để nhập vào ô <em>Key Code</em> trên Revit. Lưu ý: Vì lý do bảo mật, mã chỉ hiển thị 1 LẦN DUY NHẤT và chỉ được lưu dưới dạng băm trong CSDL:</p>
         <div class="code-display" id="actCode">@Model.GeneratedActivationCode</div>
         <div style="margin-top:10px;">
-            <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('actCode').innerText); alert('ÄÃ£ sao chÃ©p mÃ£ kÃ­ch hoáº¡t!');">Sao ChÃ©p MÃ£ GUID</button>
+            <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('actCode').innerText); alert('Đã sao chép mã kích hoạt!');">Sao Chép Mã GUID</button>
         </div>
     </div>
 }
@@ -36,43 +36,43 @@
 <!-- Stats Overview -->
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-label">Tá»•ng Sá»‘ Báº£n Quyá»n</div>
+        <div class="stat-label">Tổng Số Bản Quyền</div>
         <div class="stat-value">@Model.TotalLicenses</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Äang Hoáº¡t Äá»™ng (Active)</div>
+        <div class="stat-label">Đang Hoạt Động (Active)</div>
         <div class="stat-value" style="color:#16a34a;">@Model.ActiveLicenses</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Chá» Duyá»‡t Tá»« Revit</div>
+        <div class="stat-label">Chờ Duyệt Từ Revit</div>
         <div class="stat-value" style="color:#d97706;">@Model.PendingRequestsCount</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Thiáº¿t Bá»‹ Äang KÃ­ch Hoáº¡t</div>
+        <div class="stat-label">Thiết Bị Đang Kích Hoạt</div>
         <div class="stat-value" style="color:#0284c7;">@Model.ActiveDevicesCount</div>
     </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-<!--  CARD: YÃŠU Cáº¦U ÄÄ‚NG KÃ Tá»ª REVIT CHá»œ PHÃŠ DUYá»†T                 -->
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  CARD: YÊU CẦU ĐĂNG KÝ TỪ REVIT CHỜ PHÊ DUYỆT                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="card" style="border: 1px solid @(Model.PendingRequests.Any() ? "#f59e0b" : "#e2e8f0"); box-shadow: @(Model.PendingRequests.Any() ? "0 4px 12px rgba(245, 158, 11, 0.15)" : "none");">
     <div class="card-header" style="background:@(Model.PendingRequests.Any() ? "#fffbeb" : "transparent"); margin:-20px -20px 16px -20px; padding:16px 20px; border-radius:9px 9px 0 0; border-bottom:1px solid @(Model.PendingRequests.Any() ? "#fef3c7" : "#e2e8f0");">
         <div style="display:flex; align-items:center; gap:8px;">
             <h2 class="card-title" style="color:@(Model.PendingRequests.Any() ? "#b45309" : "#0f172a"); font-size:16px; margin:0;">
-                ðŸ”” YÃªu Cáº§u ÄÄƒng KÃ½ Chá» PhÃª Duyá»‡t (Revit Client)
+                🔔 Yêu Cầu Đăng Ký Chờ Phê Duyệt (Revit Client)
             </h2>
             <span class="badge" style="background:@(Model.PendingRequests.Any() ? "#f59e0b" : "#94a3b8"); color:#ffffff; font-size:11px;">
-                @(Model.PendingRequestsCount) yÃªu cáº§u
+                @(Model.PendingRequestsCount) yêu cầu
             </span>
         </div>
-        <small style="color:#64748b;">NgÆ°á»i dÃ¹ng báº¥m nÃºt "Gá»­i yÃªu cáº§u Ä‘Äƒng kÃ½" tá»« Revit Add-in sáº½ hiá»‡n á»Ÿ Ä‘Ã¢y</small>
+        <small style="color:#64748b;">Người dùng bấm nút "Gửi yêu cầu đăng ký" từ Revit Add-in sẽ hiện ở đây</small>
     </div>
 
     @if (!Model.PendingRequests.Any())
     {
         <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">
-            Hiá»‡n táº¡i khÃ´ng cÃ³ yÃªu cáº§u Ä‘Äƒng kÃ½ nÃ o Ä‘ang chá» duyá»‡t.
+            Hiện tại không có yêu cầu đăng ký nào đang chờ duyệt.
         </div>
     }
     else
@@ -81,11 +81,11 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Email &amp; Há» TÃªn</th>
-                        <th>Sá»‘ Äiá»‡n Thoáº¡i</th>
-                        <th>Machine ID (Thiáº¿t Bá»‹)</th>
-                        <th>Thá»i Gian Gá»­i</th>
-                        <th>Thao TÃ¡c PhÃª Duyá»‡t</th>
+                        <th>Email &amp; Họ Tên</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Machine ID (Thiết Bị)</th>
+                        <th>Thời Gian Gửi</th>
+                        <th>Thao Tác Phê Duyệt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,11 +95,11 @@
                             <td>
                                 <strong style="color:#0f172a;">@req.Email</strong>
                                 <div style="font-size:12px; color:#2563eb; margin-top:2px;">
-                                    ðŸ‘¤ @(string.IsNullOrWhiteSpace(req.FullName) ? "ChÆ°a cung cáº¥p tÃªn" : req.FullName)
+                                    👤 @(string.IsNullOrWhiteSpace(req.FullName) ? "Chưa cung cấp tên" : req.FullName)
                                 </div>
                             </td>
                             <td>
-                                @(string.IsNullOrWhiteSpace(req.PhoneNumber) ? "â€”" : req.PhoneNumber)
+                                @(string.IsNullOrWhiteSpace(req.PhoneNumber) ? "—" : req.PhoneNumber)
                             </td>
                             <td>
                                 <code style="font-size:11px; color:#334155; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-family:monospace;">
@@ -107,7 +107,7 @@
                                 </code>
                                 @if (!string.IsNullOrWhiteSpace(req.DeviceName))
                                 {
-                                    <div style="font-size:11px; color:#64748b; margin-top:2px;">ðŸ’» @req.DeviceName</div>
+                                    <div style="font-size:11px; color:#64748b; margin-top:2px;">💻 @req.DeviceName</div>
                                 }
                             </td>
                             <td>
@@ -115,23 +115,23 @@
                             </td>
                             <td>
                                 <div style="display:flex; gap:6px; align-items:center;">
-                                    <!-- PhÃª duyá»‡t vÃ  cáº¥p key -->
+                                    <!-- Phê duyệt và cấp key -->
                                     <form method="post" asp-page-handler="ApproveRequest" style="display:flex; gap:6px;">
                                         <input type="hidden" name="requestId" value="@req.Id" />
                                         <select name="licenseType" class="form-control" style="padding:4px 8px; font-size:11.5px; height:30px;">
                                             <option value="1" selected>Trial (30 Ngày)</option>
                                             <option value="2">Annual (1 Năm)</option>
                                         </select>
-                                        <button type="submit" class="btn btn-sm btn-primary" style="background:#16a34a; border-color:#16a34a; color:#fff;" onclick="return confirm('PhÃª duyá»‡t yÃªu cáº§u vÃ  sinh mÃ£ kÃ­ch hoáº¡t cho @req.Email?');">
-                                            âœ“ PhÃª Duyá»‡t &amp; Cáº¥p Key
+                                        <button type="submit" class="btn btn-sm btn-primary" style="background:#16a34a; border-color:#16a34a; color:#fff;" onclick="return confirm('Phê duyệt yêu cầu và sinh mã kích hoạt cho @req.Email?');">
+                                            ✓ Phê Duyệt &amp; Cấp Key
                                         </button>
                                     </form>
 
-                                    <!-- Tá»« chá»‘i -->
+                                    <!-- Từ chối -->
                                     <form method="post" asp-page-handler="RejectRequest">
                                         <input type="hidden" name="requestId" value="@req.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tá»« chá»‘i yÃªu cáº§u Ä‘Äƒng kÃ½ nÃ y?');">
-                                            âœ• Tá»« Chá»‘i
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Từ chối yêu cầu đăng ký này?');">
+                                            ✕ Từ Chối
                                         </button>
                                     </form>
                                 </div>
@@ -147,29 +147,29 @@
 <!-- Create License Card -->
 <div class="card">
     <div class="card-header">
-        <h2 class="card-title">Cáº¥p Báº£n Quyá»n Má»›i Thá»§ CÃ´ng (Chá»§ Äá»™ng Táº¡o)</h2>
+        <h2 class="card-title">Cấp Bản Quyền Mới Thủ Công (Chủ Động Tạo)</h2>
     </div>
     <form method="post" asp-page-handler="CreateLicense" class="form-inline" style="flex-wrap:wrap;">
-        <input type="email" asp-for="NewEmail" class="form-control" placeholder="Email ngÆ°á»i dÃ¹ng (vd: engineer@company.com)" style="min-width:280px;" required />
+        <input type="email" asp-for="NewEmail" class="form-control" placeholder="Email người dùng (vd: engineer@company.com)" style="min-width:280px;" required />
         <select asp-for="NewLicenseType" class="form-control" style="min-width:160px;">
-            <option value="2">Annual (1 NÄƒm)</option>
-            <option value="1">Trial (30 NgÃ y)</option>
+            <option value="2">Annual (1 Năm)</option>
+            <option value="1">Trial (30 Ngày)</option>
         </select>
-        <input type="number" asp-for="NewMaxDevices" class="form-control" style="width:100px;" value="1" min="1" max="5" title="Sá»‘ thiáº¿t bá»‹ tá»‘i Ä‘a" />
-        <button type="submit" class="btn btn-primary">Táº¡o Báº£n Quyá»n &amp; MÃ£ GUID</button>
+        <input type="number" asp-for="NewMaxDevices" class="form-control" style="width:100px;" value="1" min="1" max="5" title="Số thiết bị tối đa" />
+        <button type="submit" class="btn btn-primary">Tạo Bản Quyền &amp; Mã GUID</button>
     </form>
 </div>
 
 <!-- License Table Card -->
 <div class="card">
     <div class="card-header">
-        <h2 class="card-title">Danh SÃ¡ch Báº£n Quyá»n Trong Há»‡ Thá»‘ng</h2>
+        <h2 class="card-title">Danh Sách Bản Quyền Trong Hệ Thống</h2>
         <form method="get" class="form-inline">
-            <input type="text" name="Search" value="@Model.Search" placeholder="TÃ¬m theo email..." class="form-control" style="width:220px;" />
-            <button type="submit" class="btn btn-secondary">TÃ¬m</button>
+            <input type="text" name="Search" value="@Model.Search" placeholder="Tìm theo email..." class="form-control" style="width:220px;" />
+            <button type="submit" class="btn btn-secondary">Tìm</button>
             @if (!string.IsNullOrEmpty(Model.Search))
             {
-                <a href="/" class="btn btn-secondary btn-sm">XÃ³a Lá»c</a>
+                <a href="/" class="btn btn-secondary btn-sm">Xóa Lọc</a>
             }
         </form>
     </div>
@@ -179,11 +179,11 @@
             <thead>
                 <tr>
                     <th>Email &amp; ID</th>
-                    <th>Loáº¡i</th>
-                    <th>Tráº¡ng ThÃ¡i</th>
-                    <th>Thá»i Háº¡n (UTC)</th>
-                    <th>Thiáº¿t Bá»‹ Äang DÃ¹ng</th>
-                    <th>Thao TÃ¡c</th>
+                    <th>Loại</th>
+                    <th>Trạng Thái</th>
+                    <th>Thời Hạn (UTC)</th>
+                    <th>Thiết Bị Đang Dùng</th>
+                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -191,7 +191,7 @@
                 {
                     <tr>
                         <td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">
-                            KhÃ´ng tÃ¬m tháº¥y báº£n quyá»n nÃ o phÃ¹ há»£p.
+                            Không tìm thấy bản quyền nào phù hợp.
                         </td>
                     </tr>
                 }
@@ -214,18 +214,18 @@
                         </td>
                         <td>
                             <div>@lic.ExpiresAtUtc.ToString("yyyy-MM-dd HH:mm") UTC</div>
-                            <small style="color:#64748b;">Báº¯t Ä‘áº§u: @lic.StartsAtUtc.ToString("yyyy-MM-dd")</small>
+                            <small style="color:#64748b;">Bắt đầu: @lic.StartsAtUtc.ToString("yyyy-MM-dd")</small>
                         </td>
                         <td>
-                            <div>@lic.ActiveDeviceCount / @lic.MaxDevices thiáº¿t bá»‹</div>
+                            <div>@lic.ActiveDeviceCount / @lic.MaxDevices thiết bị</div>
                             @foreach (var dev in lic.Devices.Where(d => d.Status == LicenseManagement.Domain.Enums.DeviceStatus.Active))
                             {
                                 <div style="font-size:11.5px; color:#334155; margin-top:2px;">
-                                    ðŸ’» @dev.DeviceName
+                                    💻 @dev.DeviceName
                                     <form method="post" asp-page-handler="ResetDevice" style="display:inline;">
                                         <input type="hidden" name="licenseId" value="@lic.Id" />
                                         <input type="hidden" name="deviceId" value="@dev.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger" style="padding:1px 6px; font-size:10.5px;" onclick="return confirm('Giáº£i phÃ³ng thiáº¿t bá»‹ nÃ y?');">Reset</button>
+                                        <button type="submit" class="btn btn-sm btn-danger" style="padding:1px 6px; font-size:10.5px;" onclick="return confirm('Giải phóng thiết bị này?');">Reset</button>
                                     </form>
                                 </div>
                             }
@@ -234,13 +234,13 @@
                             <div style="display:flex; gap:6px;">
                                 <form method="post" asp-page-handler="Renew">
                                     <input type="hidden" name="id" value="@lic.Id" />
-                                    <button type="submit" class="btn btn-sm btn-secondary" onclick="return confirm('Gia háº¡n báº£n quyá»n thÃªm 1 nÄƒm?');">Gia Háº¡n 1 NÄƒm</button>
+                                    <button type="submit" class="btn btn-sm btn-secondary" onclick="return confirm('Gia hạn bản quyền thêm 1 năm?');">Gia Hạn 1 Năm</button>
                                 </form>
                                 @if (lic.Status != LicenseManagement.Domain.Enums.LicenseStatus.Revoked)
                                 {
                                     <form method="post" asp-page-handler="Revoke">
                                         <input type="hidden" name="id" value="@lic.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Báº¡n cÃ³ cháº¯c muá»‘n THU Há»’I báº£n quyá»n nÃ y khÃ´ng? Thiáº¿t bá»‹ liÃªn káº¿t sáº½ bá»‹ vÃ´ hiá»‡u hÃ³a.');">Thu Há»“i</button>
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn THU HỒI bản quyền này không? Thiết bị liên kết sẽ bị vô hiệu hóa.');">Thu Hồi</button>
                                     </form>
                                 }
                             </div>
